@@ -1,0 +1,103 @@
+%!Adobe-FontList 1.18
+%Locale:0x40c
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:GillSansMTPro-Book
+FamilyName:Gill Sans MT Pro
+StyleName:Book
+FullName:Gill Sans MT Pro Book
+MenuName:Gill Sans MT Pro Book
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:H:\selim resto\Final-menu-le 52\Document fonts\GillSansMTPro-Book.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+FileLength:73448
+FileModTime:1468826578
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,18,Gill Sans MT Pro Book
+NameArray:0,Mac,4,Gill Sans MT Pro Book
+NameArray:0,Win,1,Gill Sans MT Pro Book
+NameArray:0,Win,16,Gill Sans MT Pro
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:GillSansMTPro-Medium
+FamilyName:Gill Sans MT Pro
+StyleName:Medium
+FullName:Gill Sans MT Pro Medium
+MenuName:Gill Sans MT Pro Medium
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:H:\selim resto\Final-menu-le 52\Document fonts\GillSansMTPro-Medium.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+FileLength:88172
+FileModTime:1468826578
+WeightClass:500
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Gill Sans MT Pro Medium
+NameArray:0,Win,1,Gill Sans MT Pro Medium
+NameArray:0,Win,16,Gill Sans MT Pro
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:Lobster1.4
+FamilyName:Lobster 1.4
+StyleName:Regular
+FullName:Lobster 1.4
+MenuName:Lobster 1.4
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:H:\selim resto\Final-menu-le 52\Document fonts\Lobster 1.4.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+FileLength:37632
+FileModTime:1278101350
+WeightClass:400
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Lobster 1.4
+NameArray:0,Win,1,Lobster 1.4
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:MinionPro-Regular
+FamilyName:Minion Pro
+StyleName:Regular
+FullName:Minion Pro
+MenuName:Minion Pro
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:H:\selim resto\Final-menu-le 52\Document fonts\MinionPro-Regular.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+FileLength:218640
+FileModTime:1363361132
+WeightClass:400
+WidthClass:5
+AngleClass:0
+DesignSize:110
+NameArray:0,Mac,4,Minion Pro
+NameArray:0,Win,1,Minion Pro
+%EndFont
+
