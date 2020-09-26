@@ -6,8 +6,9 @@ if (isset($_GET['longitude']) && isset($_GET['latitude'])) {
     $longitude = $_GET['longitude'];
     $latitude = $_GET['latitude'];
 }
-$sql = "select * from BlocageApplicationWeb where ActifBlocage=1
+$sql = "select * from  BlocageApplicationWeb where ActifBlocage=1
  and convert(date,GETDATE())>= DateDebutBlocage and  convert(date,GETDATE())<= DateFinBlocage ";
+
 $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
@@ -93,8 +94,8 @@ Although you can use them, for a more unique website, replace these images with 
 
 
     <div class="row">
-        <input type="text" value="<?php echo $longitude ?>" id="longitude">
-        <input type="text" value="<?php echo $latitude ?>" id="latitude">
+        <input type="hidden" value="<?php echo $longitude ?>" id="longitude">
+        <input type="hidden" value="<?php echo $latitude ?>" id="latitude">
         <input type="hidden" id="numbc" value="<?php echo str_replace(" ", "", date('d/m/Y h:i:s')) ?>">
     </div>
 
@@ -102,7 +103,7 @@ Although you can use them, for a more unique website, replace these images with 
 
         <div class="col-md-12 ">
 
-            <div class="col-sm-3 "></div>
+
             <div class="col-sm-6 ">
                 <center>
 
@@ -118,19 +119,26 @@ Although you can use them, for a more unique website, replace these images with 
                                     <h4 class="font-16"></h4>
                                     <br>
                                     <br>
-                                    <p class="btn btn-danger btn-lg" onclick="getMenu()"><i
+                                    <p class="btn btn-danger btn-lg" id="bt_menu" hidden   onclick="getMenu()"><i
                                                 class="fa fa-play-circle"></i>
                                         Voir Menu </p>
+
+
                                 </div>
 
 
                             </div>
+
+                            <label class="color-red font-weight-bold font-28  animated  pulse infinite    ">
+
+                                <input type="checkbox" id="checkrobot" class="" onclick="RobetTest()" >
+                                Je ne suis pas un rebot</label>
                             <!--              fin actif         -->
                         <?php } ELSE { ?>
                             <!--                          DEACTIF-->
                             <div class="sub-ttl">Restaurant le 52</div>
                             <div>
-                                <h5>FERMEE DU
+                                <h5 class="color-white">FERMEE DU
                                     <span class="font-weight-bold color-red"><?php echo date_format($DateDebutBlocage, 'd/m/Y') ?></span>
                                     AU
                                     <span class="font-weight-bold color-red">
@@ -141,14 +149,14 @@ Although you can use them, for a more unique website, replace these images with 
                             </div>
 
 
-                            <!--                          FIN DESCATIF-->
+                            <!--             FIN DESCATIF-->
                         <?php } ?>
                         <div id="dataInfoRestaurant">
 
                             <input type='hidden'  class="" readonly id='tel' name='tel' value='46 525 252'/>
                          <div class="col-md-12  ">
                             <h4 class="color-white font-weight-bold">
-                                <i class="fa fa-phone"></i> (+216) 46 525 252</h4>
+                                <i class="fa fa-phone"></i> (+216) 46 52 52 52</h4>
 <!--                            <a class="btn btn-info" href="https://www.facebook.com/RestoLe52/"><i-->
 <!--                                        class="fa fa-facebook-square"></i></a>-->
                          </div>
@@ -195,28 +203,28 @@ Although you can use them, for a more unique website, replace these images with 
 
     <div class="row  ">
 
-        <div class="col-md-5 col-5 ">
+        <div class="col-md-4 col-4 ">
 
             <div class="input-group">
 
-                <label class="color-white">&nbsp; Total : &nbsp;</label>
-                <input type="number" id="total" class="form-control text-right" value="0" readonly>
+                <label class="color-white" style="font-size: 11px">&nbsp; Total : &nbsp;</label>
+                <input type="number" id="total" style="font-size: 11px" class="form-control text-right" value="0" readonly>
 
             </div>
         </div>
 
-        <div class="col-md-7 col-7 ">
+        <div class="col-md-8 col-8 ">
 
             <!-- Input Group -->
             <div class="input-group btn-group">
 
 
-                <button class="btn  alert-blue " data-toggle="modal" data-target="#ModalSuivie"><i
-                            class="fa fa-eye"></i> Suivie
+                <button class="btn  alert-blue   " style="font-size: 11px"  data-toggle="modal" data-target="#ModalSuivie"><i
+                            class="fa fa-eye"></i> Suivi de la commande
                 </button>
-                <button hidden id="bt_pannier_down" class="btn  btn-danger " type="button" onclick="FillCommande()">
+                <button hidden id="bt_pannier_down" class="btn  btn-danger " style="font-size: 11px" type="button" onclick="FillCommande()">
                     <i class="fa fa-shopping-cart"></i>
-                    Pannier
+                    Panier
                 </button>
             </div>
         </div>
@@ -242,26 +250,23 @@ Although you can use them, for a more unique website, replace these images with 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-input-icon">
 
                     <input class="mdl-textfield__input" type="text" required id="client">
-                    <label class="mdl-textfield__label" for="client">nom et prenom </label>
-                    <span class="mdl-textfield__error">Entrez votre nom et prenom !</span>
+                    <label class="mdl-textfield__label" for="client">Nom et Prénom </label>
+                    <span class="mdl-textfield__error">Entrez votre Nom et Prénom !</span>
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-input-icon">
 
                     <input class="mdl-textfield__input" type="text" Pattern="[0-9]{8}" size="8" minlength="8"
                            maxlength="8" required id="telclient">
-                    <label class="mdl-textfield__label" for="telclient">Telephone </label>
-                    <span class="mdl-textfield__error">Entrez un  numero Telephone valide !</span>
+                    <label class="mdl-textfield__label" for="telclient">Télèphone </label>
+                    <span class="mdl-textfield__error">Entrez un  numero Télèphone valide !</span>
 
                 </div>
-
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-input-icon">
 
 
                     <input class=" " hidden type="text" required id="adresseclient">
 
 
-                </div>
 
 
             </div>
@@ -370,6 +375,24 @@ Although you can use them, for a more unique website, replace these images with 
     </div>
 </div>
 <script>
+
+
+    function RobetTest() {
+
+        var check=document.getElementById("checkrobot").checked;
+
+        if(check)
+        {
+            document.getElementById("bt_menu").hidden = false;
+
+        }else{
+
+            document.getElementById("bt_menu").hidden = true;
+        }
+
+
+    }
+
     function getMenu() {
         getMenuFamille();
         FillListImageFamille();
@@ -388,7 +411,7 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 document.getElementById('dataArticle').innerHTML = this.responseText;
-                //     console.error(this.responseText)
+                //     console.info(this.responseText)
 
             }
 
@@ -416,7 +439,7 @@ Although you can use them, for a more unique website, replace these images with 
                 //document.getElementById('btn_tout').focus();
                 // document.getElementById('btn_tout').focus=true;
 
-                //     console.error(this.responseText)
+                //     console.info(this.responseText)
 
             }
 
@@ -441,7 +464,7 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 document.getElementById('dataArticle').innerHTML = this.responseText;
-                //  console.error(this.responseText)
+                //  console.info(this.responseText)
 
             }
 
@@ -484,7 +507,7 @@ Although you can use them, for a more unique website, replace these images with 
 
             };
             var url = "Service/AddLigneCommandeTemporaire.php?" + "CodeArticle=" + CodeArticle + "&Quantite=" + qt + "&NumeroBonCommandeVente=" + numbc + "&observation=" + observation;
-            console.error(url);
+            console.info(url);
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
 
@@ -525,7 +548,7 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 document.getElementById('dataArticle').innerHTML = this.responseText;
-                //     console.error(this.responseText)
+                //     console.info(this.responseText)
 
             }
 
@@ -547,7 +570,7 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 document.getElementById('menu_horisontale').innerHTML = this.responseText;
-                //     console.error(this.responseText)
+                //     console.info(this.responseText)
 
             }
 
@@ -568,7 +591,7 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 document.getElementById('dataArticle').innerHTML = this.responseText;
-                //  console.error(this.responseText)
+                //  console.info(this.responseText)
 
             }
 
@@ -590,7 +613,7 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 document.getElementById('dataArticle').innerHTML = this.responseText;
-                //  console.error(this.responseText)
+                //  console.info(this.responseText)
 
             }
 
@@ -639,7 +662,7 @@ Although you can use them, for a more unique website, replace these images with 
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
 
-                console.error(this.responseText);
+                console.info(this.responseText);
                 FillCommande();
                 TotalCommande();
                 TotalNbCommande();
@@ -663,7 +686,7 @@ Although you can use them, for a more unique website, replace these images with 
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
 
-                console.error(this.responseText);
+                console.info(this.responseText);
                 addArticleModif(CodeArticle, PrixVenteTTC, Designation);
 
                 TotalCommande();
@@ -718,10 +741,10 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 var t = this.responseText;
-                console.error(t)
+                console.info(t);
                 var total = document.getElementById("total");
-                total.value = t;
-                console.error(t)
+                total.value = t.toFixed(3);
+                console.info(t)
             }
 
         };
@@ -756,7 +779,7 @@ Although you can use them, for a more unique website, replace these images with 
 
             };
             var url = "Service/AddLigneCommandeTemporaire.php?" + "CodeArticle=" + CodeArticle + "&Quantite=" + qt + "&NumeroBonCommandeVente=" + numbc + "&observation=" + observation;
-            console.error(url);
+            console.info(url);
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
 
@@ -787,7 +810,7 @@ Although you can use them, for a more unique website, replace these images with 
         var latitude = document.getElementById('latitude').value;
         var longitude = document.getElementById('longitude').value;
 
-        if (isNaN(telclient)) {
+        if (isNaN(telclient)&&telclient.length>8) {
             alert("donner un numero valide");
         } else if (client == "") {
             alert("Saisir votre nom ");
@@ -803,7 +826,7 @@ Although you can use them, for a more unique website, replace these images with 
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var t = this.responseText;
-                    console.error(t);
+                    console.info(t);
                     //  location.reload();
                     location.href = "googlemap.php?latitude=" + latitude + "&longitude=" + longitude + "&telclient=" + telclient + "&numero=" + t;
 
@@ -811,7 +834,7 @@ Although you can use them, for a more unique website, replace these images with 
 
             };
             var url = "Service/ValideBonCommande.php?" + "client=" + client + "&telclient=" + telclient + "&NumeroBonCommandeVente=" + numbc + "&adresse=" + adresse + "&latitude=" + latitude + "&longitude=" + longitude;
-            console.error(url);
+            console.info(url);
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
         }
@@ -829,7 +852,7 @@ Although you can use them, for a more unique website, replace these images with 
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
 
-                console.error(this.responseText);
+                console.info(this.responseText);
                 document.getElementById("bt_pannier").hidden = true;
                 document.getElementById("bt_pannier_down").hidden = true;
                 FillCommande();

@@ -10,8 +10,7 @@ if( $conn ) {
     /*     echo "Connexion établie.<br />"; */
 }else{
     header("Location:ErreurConnexion.html");
-    echo "La connexion n'a pu être établie.<br />";
-    die( print_r( sqlsrv_errors(), true));
+
 
 }
 

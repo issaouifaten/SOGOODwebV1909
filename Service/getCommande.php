@@ -40,7 +40,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                 <div class=\"card\">
                           
                                  <div class='col-md-12'>
-                                  <button class='btn color-red  btn-sm right '   onclick='deleteArticle(\"$CodeArticle\")'><i class='fa fa-close'></i></button>
+                                  <button class='btn color-red  btn-sm right '   onclick='deleteArticle(\"$CodeArticle\")'><i class='fa fa-close'></i> Annuler Article </button>
                                    </div>
                                 
                                    

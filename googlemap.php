@@ -225,7 +225,9 @@ if (isset($_GET['longitude']) && isset($_GET['latitude'])) {
 
             center: le52,
             zoom: 20,
-            mapTypeId: 'roadmap'
+            mapTypeId:google.maps.MapTypeId.HYBRID
+
+
         });
 
 

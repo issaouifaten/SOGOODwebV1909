@@ -89,7 +89,7 @@ $bt="  <div class='container center '>
 									<span class=\"fa fa-plus\" aria-hidden=\"true\"></span>
 									Ajouter
 								</button>
-								<button class='btn btn-dark '  onclick='FillListImageFamille()'><i class='fa fa-arrow-circle-left'></i></button>
+								<button class='btn btn-dark '  onclick='FillListImageFamille()'><i class='fa fa-arrow-circle-left'></i> Retour</button>
 							</center>
 							
 							</span></div> ";

@@ -20,7 +20,7 @@ echo"
                          
                             <input type='tel' hidden readonly id='tel' name='tel' value='46 525 252'/>
                            <h4 class=\"color-white font-weight-bold\">
-                                <i class=\"fa fa-phone\"></i> (+216) 46 525 252</h4>
+                                <i class=\"fa fa-phone\"></i> (+216) 46 52 52 52</h4>
 
                         </div>
    </center>

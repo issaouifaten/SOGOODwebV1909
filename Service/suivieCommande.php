@@ -2,7 +2,7 @@
 require "../connexion.php";
 $Num = $_GET['tel'];
 $sql = "
-select Etat.Libelle, TotalTTC,
+select Etat.Libelle, TotalTTC,getdate() as dateActuel,
    ( (select distinct (isnull( stuff ((select distinct (', '+   ((FamilleArticle.Libelle+' :  '+ DesignationArticle +' (' +convert (nvarchar ,convert(numeric(18,0),Quantite) )+')' )) ) 
  from  LigneBonCommandeVente
 inner join Article on Article.CodeArticle=LigneBonCommandeVente.CodeArticle
@@ -15,19 +15,15 @@ $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
 }
-$famille = " 
-<div class=\"col-sm-6\">
-       <div class=\"card\" >
-<span class='btn btn-danger    ' onclick='  getLogo()'>&nbsp;<i class='fa fa-arrow-left  '></i> Retour </span> 
- 
-       </div>
-</div>
- ";
+
+$famille = "  ";
+$dateActuel= "";
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     $cmd = $row["cmd"];
     $Libelle = $row["Libelle"];
     $TotalTTC = $row["TotalTTC"];
+    $dateActuel = date_format($row["dateActuel"],"d/m/Y h:i:s");
 
     $famille .= "		
 		 
@@ -68,4 +64,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 
 sqlsrv_free_stmt($stmt);
-ECHO $famille;
+
+$t="<div class=\"col-sm-6\">
+       <div class=\"card\" >
+<span class='btn btn-danger    ' onclick='  getLogo()'>&nbsp;<i class='fa fa-arrow-left  '></i> Retour </span> 
+ <button class='btn btn-default' onclick='SuiviCommande()'>Etat le <span class='color-red'> $dateActuel </span>&nbsp;  <i class='fa fa-refresh'> </i> Actualiser</button>
+       </div>
+</div>";
+
+ECHO $t.$famille;
