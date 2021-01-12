@@ -10,10 +10,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $long_center = $row['LongitudeCenter'];
     $lat_center = $row['LatitudeCenter'];
     $Rayon = $row['Rayon'];
+    $title= $row['Designation'];
     $table .= "<tr>
 <td>$long_center</td>
 <td>$lat_center</td>
 <td>$Rayon</td>
+<td>$title</td>
 </tr>";
 
 }
@@ -173,7 +175,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         </div>
         <div class="col-md-12 row">
             <button class="btn btn-dark btn-sm col-md-4" onclick="FillListBlocage()">
-                <i class="fa fa-eye"></i>  Voir Liste zone bloquée</button>
+                <i class="fa fa-eye"></i>  Voir Liste Zone  </button>
         </div>
     </div>
     <div class="col-md-6 row  text-center">
@@ -193,7 +195,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             <input type="text" readonly class="form-control col-md-4" id="LatitudeExtreme">
         </div>
         <div class="col-md-12 text-center center row">
-        <button class="btn btn-danger btn-sm col-md-4" onclick="validerLocation()">Valider Zone Blocage</button>
+        <button class="btn btn-danger btn-sm col-md-4" onclick="validerLocation()">Valider Zone  </button>
         </div>
     </div>
 
@@ -252,12 +254,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         <div class="modal-content">
             <div class="modal-header alert-red">
 
-                <h4 class="modal-title"> ZOne bloquée </h4>
+                <h4 class="modal-title"> Zone de livraison </h4>
             </div>
             <div class="modal-body">
 
                 <br>
-                <table class="table">
+                <table class="tablelivraison">
                     <tbody id="dataListBlocage">
 
 
@@ -275,6 +277,11 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     </div>
 </div>
+
+
+
+
+
 <script>
     function DeleteZone(CodeZone) {
         if (window.XMLHttpRequest) {
@@ -352,6 +359,75 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         });
         //
 
+        // //
+
+        table = document.getElementById("table");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+
+            td = tr[i].getElementsByTagName("td")[0];
+         var   td2 = tr[i].getElementsByTagName("td")[1];
+         var   td3 = tr[i].getElementsByTagName("td")[2];
+         var   td_title = tr[i].getElementsByTagName("td")[3];
+
+            var lat =  td2.innerText;
+            var long =td.textContent || td.innerText;
+            var rad = td3.textContent || td3.innerText;
+            var title = td_title.textContent || td_title.innerText;
+console.error(lat+"lon"+long);
+
+            var le522 = new Object();
+            le522.lng = parseFloat(long);
+            le522.lat = parseFloat(lat);
+
+              var radius=parseFloat(rad*100000);
+            if (td) {
+
+
+                var wellCircle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: map,
+              //   center:new google.maps.LatLng(parseFloat(lat),parseFloat(10.106148)),
+                   center:le522,
+                    radius: radius
+                });
+
+
+            }
+
+            // // Create the initial InfoWindow.
+            var infoWindow = new google.maps.InfoWindow(
+                {content: 'Position', position: le522});
+            infoWindow.setContent("<div style='color:red;font-weight: bold'> "+title+" </div>");
+            infoWindow.open(map);
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         //zone interdite map
 
@@ -387,7 +463,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 
         if (test) {
-            alert("Vous etes hors zone limites , vous pouvez choisir une autre zone ");
+          //  alert("Vous etes hors zone limites , vous pouvez choisir une autre zone ");
 
             document.getElementById("erreurzone").innerHTML = "Vous etes hors zone limites , vous pouvez choisir une autre zone ";
 
@@ -459,7 +535,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 
             if (test) {
-                alert("Vous etes hors zone limites , vous pouvez choisir une autre zone ");
+             //   alert("Vous etes hors zone limites , vous pouvez choisir une autre zone ");
                 document.getElementById("bt_valider").disabled = true;
                 document.getElementById("erreurzone").innerHTML = "Vous etes hors zone limites , vous pouvez choisir une autre zone ";
 
@@ -503,6 +579,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             // For each place, get the icon, name and location.
             var bounds = new google.maps.LatLngBounds();
             places.forEach(function (place) {
+
                 if (!place.geometry) {
                     console.log("Returned place contains no geometry");
                     return;
@@ -575,7 +652,16 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     }
 
 
+
+
+
+
+
+
+
 </script>
+
+
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUpACXQtN3tSUhtmYlvinkNlyUvv_IMM8&libraries=places&callback=initAutocomplete"
         async defer></script>

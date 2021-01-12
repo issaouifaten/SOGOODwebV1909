@@ -9,8 +9,8 @@ $famille="";
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     $CodeFamille = $row["CodeFamille"];
-    $Libelle = str_replace("'"," ",$row["Libelle"]);
-$u=getUrl($CodeFamille);
+    $Libelle = str_replace("'"," ",utf8_encode($row["Libelle"]));
+$u=$row["Url"];
 $famille.= "		<div class=\"col-md-4 col-6\" onclick='FillListFamille(\"$CodeFamille\")'>
 			<div class=\"theme-block theme-block-hover\">
 				<div class=\"theme-block-picture\">

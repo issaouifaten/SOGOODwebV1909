@@ -10,9 +10,9 @@ $famille = "";
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     $CodeArticle = $row["CodeArticle"];
-    $Decription = $row["DetailCompositonArticle"];
+    $Decription = utf8_encode($row["DetailCompositonArticle"]);
     $CodeFamille = $row["CodeFamille"];
-    $Designation =str_replace("'"," ", $row["Designation"]);
+    $Designation =str_replace("'"," ",utf8_encode( $row["Designation"]));
     $PrixVenteTTC = number_format($row["PrixVenteTTC"], 3, ".", '');
     $u=$row["URL"];
     $famille .= "  
@@ -21,11 +21,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                  <div class=\"product-name text-center col-12\">
                     <h4 class='text-center'><a>$Designation</a></h4>
                 </div>
-     	    	<div class=\"theme-block-picture center align-content-center col-6\">
-                      <center>
-					<img src=\"images/$u\"  class='center text-center align-content-center'  >
-					</center>
-				</div>
+     	     
+            <div class=\"col-3\"></div>
             <div class=\"col-6\">
             
            
@@ -37,7 +34,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                     <!-- Input Group -->
                     <div class=\"input-group\">
                     <button class='btn btn-outline-danger' onclick='ChangeQuantite(\"$CodeArticle\",-1,\"$PrixVenteTTC\")'>-</button>
-                        <input type=\"number\" readonly class=\"form-control\" min='0' id='$CodeArticle'   value=\"0\">
+                        <input type=\"number\" readonly class=\"form-control text-center\" min='0' id='$CodeArticle'   value=\"0\">
                       <button class='btn btn-outline-dark' onclick='ChangeQuantite(\"$CodeArticle\",1,\"$PrixVenteTTC\")'>+</button>
                     </div>
 
@@ -45,7 +42,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             </div>
             
             <div class='col-md-12'>
-              <p class='text-left color-green font_Lobster '> $Decription</p>
+              <p class='text-left color-red font_Lobster '> $Decription</p>
             </div>
         </div>
        
@@ -87,7 +84,7 @@ $bt="  <div class='container center '>
                                <center>
 								<button class=\"btn btn-danger \" type=\"button\"  onclick='addArticle(\"$CodeArticle\",\"$PrixVenteTTC\",\"$Designation\")'>
 									<span class=\"fa fa-plus\" aria-hidden=\"true\"></span>
-									Ajouter
+									Valider
 								</button>
 								<button class='btn btn-dark '  onclick='FillListImageFamille()'><i class='fa fa-arrow-circle-left'></i> Retour</button>
 							</center>

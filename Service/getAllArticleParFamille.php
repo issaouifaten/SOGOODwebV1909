@@ -12,8 +12,8 @@ $famille = "";
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     $CodeArticle = $row["CodeArticle"];
-    $Designation = $row["Designation"];
-    $Decription = $row["DetailCompositonArticle"];
+    $Designation = utf8_encode($row["Designation"]);
+    $Decription = utf8_encode($row["DetailCompositonArticle"]);
     $PrixVenteTTC = number_format($row["PrixVenteTTC"], 3, ".", '');
     $u = $row["URL"];
     $famille .= "     

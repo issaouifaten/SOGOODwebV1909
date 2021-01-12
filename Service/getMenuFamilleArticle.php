@@ -13,7 +13,7 @@ $famille = "
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     $CodeFamille = $row["CodeFamille"];
-    $Libelle = $row["Libelle"];
+    $Libelle = utf8_encode($row["Libelle"]);
 
     $famille .= " 
 				<button class='btn btn-light btn-lg  btn-hov '    onclick='FillListFamille(\"$CodeFamille\")'>$Libelle</button>

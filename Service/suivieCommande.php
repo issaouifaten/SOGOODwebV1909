@@ -2,7 +2,7 @@
 require "../connexion.php";
 $Num = $_GET['tel'];
 $sql = "
-select Etat.Libelle, TotalTTC,getdate() as dateActuel,
+select Etat.Libelle, TotalTTC,getdate() as dateActuel,Etat.NumeroEtat,
    ( (select distinct (isnull( stuff ((select distinct (', '+   ((FamilleArticle.Libelle+' :  '+ DesignationArticle +' (' +convert (nvarchar ,convert(numeric(18,0),Quantite) )+')' )) ) 
  from  LigneBonCommandeVente
 inner join Article on Article.CodeArticle=LigneBonCommandeVente.CodeArticle
@@ -10,7 +10,7 @@ INNER JOIN FamilleArticle on FamilleArticle.CodeFamille=Article.CodeFamille
   where LigneBonCommandeVente.NumeroBonCommandeVente = BonCommandeVente.NumeroBonCommandeVente for XML Path(''),type).value('.','NVARCHAR(MAx)'),1,1,'  '),'')) ) )as cmd 
   from  BonCommandeVente
  inner join Etat on Etat.NumeroEtat=BonCommandeVente.NumeroEtat
-  where TelClient='$Num' and CONVERT(date,DateCreation,103)=CONVERT(date,GETDATE(),103) ";
+  where TelClient='$Num' and CONVERT(date,DateCreation,103)=CONVERT(date,GETDATE(),103) and Latitude!=''";
 $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
@@ -20,9 +20,25 @@ $famille = "  ";
 $dateActuel= "";
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
-    $cmd = $row["cmd"];
-    $Libelle = $row["Libelle"];
+    $cmd = utf8_encode($row["cmd"]);
+    $Libelle = utf8_encode($row["Libelle"]);
     $TotalTTC = $row["TotalTTC"];
+    $NumeroEtat = $row["NumeroEtat"];
+    switch ( $NumeroEtat)
+    {
+        case 'E01':$Libelle="En cours de validation";
+        break;
+        case 'E00':$Libelle="Annulation";
+            break;
+        case 'E13':$Libelle="En cours de préparation";
+            break;
+        case 'E02':$Libelle="En cours de livraison";
+            break;
+        case 'E03':$Libelle="Livrée";
+            break;
+        default:$Libelle="";
+    }
+
     $dateActuel = date_format($row["dateActuel"],"d/m/Y h:i:s");
 
     $famille .= "		

@@ -57,7 +57,7 @@ if (sqlsrv_execute($stmt) === false) {
 
 $sql = "insert into LigneBonCommandeVente  
 select  '$code' ,CodeArticle ,DesignationArticle ,NumeroOrdre ,PrixVenteHT ,Quantite ,MontantHT ,TauxTVA ,MontantTVA ,MontantTTC ,Observation ,TauxRemise ,MontantRemise ,MontantFodec
- ,NetHT ,PrixAchatNet  from LigneBonCommandeTemporaire where  NumeroBonCommandeVente='$NumeroBonCommandeVente'";
+ ,NetHT ,PrixAchatNet,0  from LigneBonCommandeTemporaire where  NumeroBonCommandeVente='$NumeroBonCommandeVente'";
 
 
 $stmt1 = sqlsrv_prepare($conn, $sql, array());
@@ -116,7 +116,7 @@ $sql="INSERT INTO  BonCommandeVente
      ,'$client'
         ,'$telclient'
          , ? 
-          ,'$latitude','$longitude',1 )
+          ,'','',1 )
  ";
 
 

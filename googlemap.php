@@ -269,7 +269,7 @@ if (isset($_GET['longitude']) && isset($_GET['latitude'])) {
         }
 
 
-        if(test){
+        if(!test){
             alert("Vous etes hors zone limites , vous pouvez choisir une autre zone ");
             document.getElementById("bt_valider").disabled = true;
             document.getElementById("erreurzone").innerHTML = "Vous etes hors zone limites , vous pouvez choisir une autre zone ";
@@ -353,7 +353,7 @@ if (isset($_GET['longitude']) && isset($_GET['latitude'])) {
             }
 
 
-            if(test){
+            if(!test){
                 alert("Vous etes hors zone limites , vous pouvez choisir une autre zone ");
                 document.getElementById("bt_valider").disabled = true;
                 document.getElementById("erreurzone").innerHTML = "Vous etes hors zone limites , vous pouvez choisir une autre zone ";
@@ -452,9 +452,10 @@ if (isset($_GET['longitude']) && isset($_GET['latitude'])) {
                     longitude = longitude.replace('\n', '');
                     longitude = longitude.replace('\r', '');
                     longitude = longitude.replace('%20', '');
+                    latitude = latitude.replace('%20', '');
                     console.info("l=" + longitude);
 
-                    location.href = "index.php?latitude=" + latitude + "&longitude=" + longitude;
+                    location.href = "index.php?latitude=" + latitude + "&longitude=" +longitude;
 
                 }
 

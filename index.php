@@ -6,6 +6,7 @@ if (isset($_GET['longitude']) && isset($_GET['latitude'])) {
     $longitude = $_GET['longitude'];
     $latitude = $_GET['latitude'];
 }
+
 $sql = "select * from  BlocageApplicationWeb where ActifBlocage=1
  and convert(date,GETDATE())>= DateDebutBlocage and  convert(date,GETDATE())<= DateFinBlocage ";
 
@@ -24,13 +25,78 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $MotifBlocage = utf8_encode($row["MotifBlocage"]);
     $Blocage = true;
 }
+$sql = " select FraisLivraison,SeuilGratuite from ParametreDiver";
+$stmt = sqlsrv_query($conn, $sql);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+
+    $FraisLivraison = $row['FraisLivraison'];
+    $SeuilGratuite = $row['SeuilGratuite'];
+
+}
+
+$sql=" select SUM(Inclu)   as Ouvert from (
+select 
+  case  
+when  getdate ()  between 
+ ( select cONVERT(DATETIME, CONVERT(NVARCHAR, DateJour ,103)+' '+  HeureEntre  )) 
+ and 
+ ( select cONVERT(DATETIME, CONVERT(NVARCHAR, DateJour ,103)+' '+  HeureSortie  ))
+ then 1
+ else 0
+ end  as Inclu
+from EmploieTemp where DateJour=CONVERT(date,getdate())  
+ 
+ )as tt";
+
+$stmt = sqlsrv_query($conn, $sql);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+
+    $Ouvert = $row['Ouvert'];
+
+
+}
+
+
+$sql="select   HeureEntre   ,  HeureSortie,Jour  from EmploieTemp where DateJour=CONVERT(date,getdate())  ";
+
+$stmt = sqlsrv_query($conn, $sql);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+$horraire="Horaire de Livraison : <br>";
+$et="";
+
+while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+
+    $HeureEntre = $row['HeureEntre'];
+    $HeureSortie = $row['HeureSortie'];
+    $Jour= $row['Jour'];
+if($Jour=='Dimanche') {
+
+    $horraire="Le restaurant est fermé le dimanche " ;
+
+}else{
+    if( $HeureEntre!='')
+    { $horraire .= $et . " De  " . $HeureEntre . " à " . $HeureSortie . "<br>";
+    $et = " et ";}
+}
+
+
+}
+
+
+
 
 
 ?>
 <!DOCTYPE html>
-<!-- Template by Quackit.com -->
-<!-- Images by various sources under the Creative Commons CC0 license and/or the Creative Commons Zero license.
-Although you can use them, for a more unique website, replace these images with your own. -->
+
 <html lang="fr">
 <head>
     <meta charset="utf-8">
@@ -40,10 +106,6 @@ Although you can use them, for a more unique website, replace these images with 
 
     <title>SOGOOD</title>
 
-
-    <!-- Custom CSS: You can use this stylesheet to override any Bootstrap styles and/or apply your own styles -->
-    <!-- Favicon Icon -->
-    <!--    <link rel="icon" type="image/x-icon" href="images/favicon.png"/>-->
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"/>
     <!-- Google web Font -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,500">
@@ -88,7 +150,8 @@ Although you can use them, for a more unique website, replace these images with 
 <div class="container">
 
 
-    <div class="scrollmenu fixed-top " style="margin-top: 1px;background-color: transparent" id="menu_horisontale"></div>
+    <div class="scrollmenu fixed-top " style="margin-top:40px;background-color: transparent"
+         id="menu_horisontale"></div>
     <br>
     <br>
 
@@ -98,8 +161,8 @@ Although you can use them, for a more unique website, replace these images with 
         <input type="hidden" value="<?php echo $latitude ?>" id="latitude">
         <input type="hidden" id="numbc" value="<?php echo str_replace(" ", "", date('d/m/Y h:i:s')) ?>">
     </div>
-
-    <div id="dataArticle" class="row p-1">
+<br>
+    <div id="dataArticle" class="row p-1" style="margin-top: 25px">
 
         <div class="col-md-12 ">
 
@@ -108,18 +171,26 @@ Although you can use them, for a more unique website, replace these images with 
                 <center>
 
                     <div class=" ">
-                        <?php if ($Blocage == false) { ?>
+                        <?php if ($Blocage == false) {
+
+                            if($Ouvert>=1)
+
+                            {
+
+
+                            ?>
                             <!--                        actif-->
-                            <div class="sub-ttl font_Lobster  color-white">Restaurant le 52</div>
+                            <div class="sub-ttl font_Lobster  color-white">Restaurant Le 52</div>
                             <br>
                             <br>
                             <div class="text-center">
                                 <div class="col-md-12">
-                                    <img class="img-responsive"  style="width: 250px;250px" src="images/bg_52_logo.png" alt="">
+                                    <img class="img-responsive" style="width: 250px; " src="images/bg_52_logo.png"
+                                         alt="">
                                     <h4 class="font-16"></h4>
                                     <br>
                                     <br>
-                                    <p class="btn btn-danger btn-lg" id="bt_menu" hidden   onclick="getMenu()"><i
+                                    <p class="btn btn-danger btn-lg" id="bt_menu" hidden onclick="getMenu()"><i
                                                 class="fa fa-play-circle"></i>
                                         Voir Menu </p>
 
@@ -129,23 +200,68 @@ Although you can use them, for a more unique website, replace these images with 
 
                             </div>
 
-                            <label class="color-red font-weight-bold font-28  animated  pulse infinite    ">
+                            <label class="color-white font-weight-bold font-16  animated  pulse infinite    ">
 
-                                <input type="checkbox" id="checkrobot" class="" onclick="RobetTest()" >
-                                Je ne suis pas un rebot</label>
+                                <input type="checkbox" id="checkrobot" class="" onclick="RobetTest()">
+                                Je ne suis pas un robot</label><br>
+                                <label class="color-white font-16">
+
+                                    <?php echo $horraire  ?>
+
+                                </label>
                             <!--              fin actif         -->
-                        <?php } ELSE { ?>
+                        <?php }
+                        else{?>
+
+
+                            <div class="sub-ttl font_Lobster  color-white">Restaurant Le 52</div>
+                            <br>
+                            <br>
+                            <div class="text-center">
+                                <div class="col-md-12">
+                                    <img class="img-responsive" style="width: 250px;250px" src="images/bg_52_logo.png"
+                                         alt="">
+                                    <h4 class="font-16"></h4>
+                                    <br>
+
+                                   <label class="color-white font-20">
+
+                                       <?php echo $horraire  ?>
+
+                                   </label>
+
+                                </div>
+
+
+                            </div>
+
+
+
+
+
+
+
+                            <?php
+
+
+
+
+                        }
+
+
+
+                        } ELSE { ?>
                             <!--                          DEACTIF-->
-                            <div class="sub-ttl">Restaurant le 52</div>
+                            <div class="sub-ttl font_Lobster  color-white">Restaurant Le 52</div>
                             <div>
-                                <h5 class="color-white">FERMEE DU
+                                <h5 class="color-white text-uppercase">FERMé DU
                                     <span class="font-weight-bold color-red"><?php echo date_format($DateDebutBlocage, 'd/m/Y') ?></span>
                                     AU
                                     <span class="font-weight-bold color-red">
                                       <?php echo date_format($DateFinBlocage, 'd/m/Y') ?></span>
                                 </h5>
                                 <hr>
-                                <p><?php echo $MotifBlocage ?></p>
+                                <p  class="color-white"><?php echo $MotifBlocage ?></p>
                             </div>
 
 
@@ -153,13 +269,26 @@ Although you can use them, for a more unique website, replace these images with 
                         <?php } ?>
                         <div id="dataInfoRestaurant">
 
-                            <input type='hidden'  class="" readonly id='tel' name='tel' value='46 525 252'/>
-                         <div class="col-md-12  ">
-                            <h4 class="color-white font-weight-bold">
-                                <i class="fa fa-phone"></i> (+216) 46 52 52 52</h4>
-<!--                            <a class="btn btn-info" href="https://www.facebook.com/RestoLe52/"><i-->
-<!--                                        class="fa fa-facebook-square"></i></a>-->
-                         </div>
+                            <input type='hidden' class="" readonly id='tel' name='tel' value='46 525 252'/>
+                            <div class="col-md-12  ">
+                                <h4 class="color-white font-weight-bold">
+                                    <i class="fa fa-phone"></i> (+216) 46 52 52 52</h4>
+                            </div>
+
+                            <div class="btn-group row ">
+
+                                 <a href='https://www.facebook.com/RestoLe52' class='btn btn-info'>
+                                            <i class='fa fa-facebook-square'></i> facebook &nbsp;</a>
+
+
+                                        <a href='https://www.instagram.com/restaurant_le52/' style="background-color: #b30047"
+                                           class='btn btn-danger'>
+                                            <i class='fa fa-instagram'></i> Instagram </a>
+                            </div>
+
+                            <!--                            <a class="btn btn-info" href="https://www.facebook.com/RestoLe52/"><i-->
+                            <!--                                        class="fa fa-facebook-square"></i></a>-->
+
                         </div>
                     </div>
 
@@ -203,34 +332,53 @@ Although you can use them, for a more unique website, replace these images with 
 
     <div class="row  ">
 
-        <div class="col-md-4 col-4 ">
 
-            <div class="input-group">
-
-                <label class="color-white" style="font-size: 11px">&nbsp; Total : &nbsp;</label>
-                <input type="number" id="total" style="font-size: 11px" class="form-control text-right" value="0" readonly>
-
-            </div>
-        </div>
-
-        <div class="col-md-8 col-8 ">
-
-            <!-- Input Group -->
-            <div class="input-group btn-group">
+        <div class="row  ">
 
 
-                <button class="btn  alert-blue   " style="font-size: 11px"  data-toggle="modal" data-target="#ModalSuivie"><i
+            <div class="input-group btn-group  col-md-6 ">
+
+
+                  <button class="btn  alert-blue   " style="font-size: 11px;margin-left: 30px" data-toggle="modal"
+                        data-target="#ModalSuivie"><i
                             class="fa fa-eye"></i> Suivi de la commande
                 </button>
-                <button hidden id="bt_pannier_down" class="btn  btn-danger " style="font-size: 11px" type="button" onclick="FillCommande()">
+                <button hidden id="bt_pannier_down" class="btn  btn-danger " style="font-size: 11px" type="button"
+                        onclick="FillCommande()">
                     <i class="fa fa-shopping-cart"></i>
-                    Panier
+                    &nbsp;&nbsp; Votre  Panier &nbsp;&nbsp;
                 </button>
             </div>
         </div>
     </div>
+
+    <div class="row  ">
+
+        <div class="col-md-12 col-12 ">
+
+            <div class="input-group">
+                <input type="number" id="fraislivraison" hidden style="font-size: 11px" class="form-control text-right"
+                       value="<?php echo $FraisLivraison ?>" readonly>
+                <input type="number" id="seuillivraison" hidden style="font-size: 11px" class="form-control text-right"
+                       value="<?php echo $SeuilGratuite ?>" readonly>
+
+                <label class="color-white" style="font-size: 9px">&nbsp; Total CMD: &nbsp;</label>
+                <input type="number" id="total" style="font-size: 11px" class="form-control text-right" value="0"
+                       readonly>
+                <label class="color-white" style="font-size: 9px">&nbsp;+ Frais de  Livraison : &nbsp;</label>
+                <input type="number" id="totalfrais" style="font-size: 11px" class="form-control text-right" value="0"
+                       readonly>
+                <label class="color-white" style="font-size: 9px">&nbsp;Total à payer : &nbsp;</label>
+                <input type="number" id="totalpayer" style="font-size: 11px" class="form-control text-right" value="0"
+                       readonly>
+
+            </div>
+        </div>
+
+
+    </div>
 </footer>
-</div><!-- /.container -->
+
 
 
 <div class="modal fade" id="ModalValidation" role="dialog">
@@ -240,7 +388,7 @@ Although you can use them, for a more unique website, replace these images with 
         <div class="modal-content">
             <div class="modal-header alert-red">
 
-                <h4 class="modal-title text-center "> Confirmation Réservation </h4>
+                <h4 class="modal-title text-center "> Confirmation Commande </h4>
             </div>
             <div class="modal-body">
                 <center>
@@ -250,23 +398,24 @@ Although you can use them, for a more unique website, replace these images with 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-input-icon">
 
                     <input class="mdl-textfield__input" type="text" required id="client">
-                    <label class="mdl-textfield__label" for="client">Nom et Prénom </label>
-                    <span class="mdl-textfield__error">Entrez votre Nom et Prénom !</span>
+                    <label class="mdl-textfield__label" for="client">Nom et Prénom  <span class="color-red">*</span>   </label>
+                    <span class="mdl-textfield__error"></span>
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-input-icon">
 
                     <input class="mdl-textfield__input" type="text" Pattern="[0-9]{8}" size="8" minlength="8"
                            maxlength="8" required id="telclient">
-                    <label class="mdl-textfield__label" for="telclient">Télèphone </label>
-                    <span class="mdl-textfield__error">Entrez un  numero Télèphone valide !</span>
+                    <label class="mdl-textfield__label" for="telclient">Téléphone <span class="color-red">*</span>    </label>
+                    <span class="mdl-textfield__error"> </span>
 
                 </div>
+                <br>
+
+                 <label class="color-red"> * Champs obligatoires </label>
 
 
-                    <input class=" " hidden type="text" required id="adresseclient">
-
-
+                <input class=" " hidden type="text" required id="adresseclient">
 
 
             </div>
@@ -287,7 +436,7 @@ Although you can use them, for a more unique website, replace these images with 
         <div class="modal-content">
             <div class="modal-header alert-blue">
 
-                <h4 class="modal-title"> Suivie Reservation </h4>
+                <h4 class="modal-title"> Suivie Commande </h4>
             </div>
             <div class="modal-body">
                 <center>
@@ -295,15 +444,15 @@ Although you can use them, for a more unique website, replace these images with 
 
                 </center>
                 <br>
-                <label> Tapez votre numéro que vous avez saisi lors de la passation de la commande</label>
+                <label> Tapez votre numéro : </label>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-input-icon">
 
                     <input class="mdl-textfield__input" type="text" pattern="[0-9]{8}" required id="telclientsuivie">
-                    <label class="mdl-textfield__label" for="telclientsuivie">Telephone </label>
-                    <span class="mdl-textfield__error">Entrez valide Telephone!</span>
+                    <label class="mdl-textfield__label" for="telclientsuivie">Téléphone <span class="color-red">*</span>   </label>
+                    <span class="mdl-textfield__error"></span>
                 </div>
-
+                <label class="color-red"> * Champ obligatoire </label>
 
             </div>
             <div class="modal-footer">
@@ -374,18 +523,48 @@ Although you can use them, for a more unique website, replace these images with 
 
     </div>
 </div>
+
+<div class="modal fade" id="ModalErreurQTArticle" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header alert-red">
+
+                <h4 class="modal-title"> Erreur </h4>
+            </div>
+            <div class="modal-body">
+                <center>
+                    <img src="images/logo_52.jpg" style="width: 50px;height: 50px">
+
+                </center>
+                <br>
+                <h4><i class="fa fa-exclamation-triangle"></i> Vous devez entrer une quantité </h4>
+
+
+            </div>
+            <div class="modal-footer">
+
+
+                <button class="btn btn-default" data-dismiss="modal">fermer</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 <script>
 
 
     function RobetTest() {
 
-        var check=document.getElementById("checkrobot").checked;
+        var check = document.getElementById("checkrobot").checked;
 
-        if(check)
-        {
+        if (check) {
             document.getElementById("bt_menu").hidden = false;
 
-        }else{
+        } else {
 
             document.getElementById("bt_menu").hidden = true;
         }
@@ -477,6 +656,10 @@ Although you can use them, for a more unique website, replace these images with 
     function addArticle(CodeArticle, PrixVenteTTC, Designation) {
         var numbc = document.getElementById('numbc').value;
         var qt = document.getElementById(CodeArticle).value;
+        var fraislivraison = document.getElementById("fraislivraison").value;
+        var seuillivraison = document.getElementById("seuillivraison").value;
+        var totalfrais = document.getElementById("totalfrais");
+        var totalpayer = document.getElementById("totalpayer");
         var observation = document.getElementById('observation').innerHTML;
 
 
@@ -497,7 +680,15 @@ Although you can use them, for a more unique website, replace these images with 
                     var t = total.value;
                     t = t * 1 + PrixVenteTTC * qt;
                     total.value = t.toFixed(3);
-
+                    if (t == 0) {
+                        totalfrais.value = 0;
+                    } else if (t > seuillivraison) {
+                        totalfrais.value = 0;
+                    } else {
+                        totalfrais.value = fraislivraison;
+                    }
+                    var totpayer=t*1+fraislivraison*1;
+                    totalpayer.value=totpayer.toFixed(3);
                     document.getElementById("bt_pannier").hidden = false;
                     document.getElementById("bt_pannier_down").hidden = false;
                     TotalCommande();
@@ -512,7 +703,9 @@ Although you can use them, for a more unique website, replace these images with 
             xmlhttp.send();
 
         } else {
-            alert('Entrez une quantite')
+
+            $('#ModalErreurQTArticle').modal('show');
+
         }
     }
 
@@ -633,6 +826,13 @@ Although you can use them, for a more unique website, replace these images with 
             nv_qt = 1;
             prixtot = prixuntaire;
         }
+
+
+
+
+
+
+
         document.getElementById(code).value = nv_qt;
         document.getElementById('prixarticle').value = prixtot.toFixed(3);
     }
@@ -731,6 +931,10 @@ Although you can use them, for a more unique website, replace these images with 
     function TotalCommande() {
 
         var numbc = document.getElementById('numbc').value;
+        var fraislivraison = document.getElementById("fraislivraison").value;
+        var seuillivraison = document.getElementById("seuillivraison").value;
+        var totalfrais = document.getElementById("totalfrais");
+        var totalpayer = document.getElementById("totalpayer");
         if (window.XMLHttpRequest) {
 
             xmlhttp = new XMLHttpRequest();
@@ -741,10 +945,20 @@ Although you can use them, for a more unique website, replace these images with 
             if (this.readyState == 4 && this.status == 200) {
 
                 var t = this.responseText;
-                console.info(t);
+
                 var total = document.getElementById("total");
-                total.value = t.toFixed(3);
-                console.info(t)
+                var tot = t * 1;
+                total.value = tot.toFixed(3);
+                if (t == 0) {
+                    totalfrais.value = 0;
+                } else if (t > seuillivraison) {
+                    totalfrais.value = 0;
+                } else {
+                    totalfrais.value = fraislivraison;
+                }
+                var totpayer=t*1+fraislivraison*1;
+                totalpayer.value=totpayer.toFixed(3) ;
+
             }
 
         };
@@ -810,7 +1024,7 @@ Although you can use them, for a more unique website, replace these images with 
         var latitude = document.getElementById('latitude').value;
         var longitude = document.getElementById('longitude').value;
 
-        if (isNaN(telclient)&&telclient.length>8) {
+        if (isNaN(telclient) && telclient.length > 8) {
             alert("donner un numero valide");
         } else if (client == "") {
             alert("Saisir votre nom ");
@@ -877,7 +1091,7 @@ Although you can use them, for a more unique website, replace these images with 
 <script src="js/popper.min.js"></script>
 <!-- Bootstrap Core JavaScript-->
 <script src="js/bootstrap.min.js"></script>
-<!-- Material Design Lite JavaScript-->
+<!-- Material Design Lite JavaScript-->+
 <script src="js/material.min.js"></script>
 <!-- Material Select Field Script -->
 <script src="js/mdl-selectfield.min.js"></script>

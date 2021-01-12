@@ -24,11 +24,11 @@ $famille="";
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     $CodeArticle = $row["CodeArticle"];
-    $Quantite = $row["Quantite"];
+    $Quantite = number_format( $row["Quantite"],0,'','');
     $PrixVenteTTC = $row["MontantTTC"];
-    $Observation = $row["Observation"];
+    $Observation = utf8_encode($row["Observation"]);
     $URL = $row["URL"];
-    $Libelle = str_replace("'", " ", $row["DesignationArticle"]);
+    $Libelle = str_replace("'", " ", utf8_encode($row["DesignationArticle"]));
     $u = getUrl($CodeArticle);
     $famille .= "		
 		 
